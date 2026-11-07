@@ -276,6 +276,7 @@ export class UIController {
   renderCategoriesGrid() {
     const categories = [
       { id: 'all', name: 'Все темы (микс)', icon: '🎲' },
+      { id: 'photo', name: 'Фото-раунд', icon: '🖼️' },
       { id: 'Биология', name: 'Биология', icon: '🧬' },
       { id: 'Химия', name: 'Химия', icon: '🧪' },
       { id: 'Физика', name: 'Физика', icon: '⚡' },
@@ -297,6 +298,8 @@ export class UIController {
       
       const pool = cat.id === 'all'
         ? this.quiz.allQuestions
+        : cat.id === 'photo'
+        ? this.quiz.allQuestions.filter(q => !!q.image)
         : this.quiz.allQuestions.filter(q => q.category === cat.id);
       const catStats = this.srs.getStats(pool);
       const isDone = (catStats.dueCount === 0 && catStats.total > 0);
@@ -327,7 +330,9 @@ export class UIController {
 
   updateHomeStats() {
     let pool = this.quiz.allQuestions;
-    if (this.quiz.currentCategory !== 'all') {
+    if (this.quiz.currentCategory === 'photo') {
+      pool = pool.filter(q => !!q.image);
+    } else if (this.quiz.currentCategory !== 'all') {
       pool = pool.filter(q => q.category === this.quiz.currentCategory);
     }
     const stats = this.srs.getStats(pool);
@@ -349,7 +354,9 @@ export class UIController {
 
   startQuiz() {
     let pool = this.quiz.allQuestions;
-    if (this.quiz.currentCategory !== 'all') {
+    if (this.quiz.currentCategory === 'photo') {
+      pool = pool.filter(q => !!q.image);
+    } else if (this.quiz.currentCategory !== 'all') {
       pool = pool.filter(q => q.category === this.quiz.currentCategory);
     }
     const stats = this.srs.getStats(pool);
@@ -377,15 +384,16 @@ export class UIController {
     this.quizScoreCorrect.textContent = `✓ ${prog.correct}`;
     this.quizScoreIncorrect.textContent = `✗ ${prog.incorrect}`;
 
-    this.badgeCategory.textContent = q.category;
     const srsRec = this.srs.getRecord(q.id);
     this.badgeLevel.textContent = LEVEL_LABELS[srsRec.level] || 'Новый';
 
     // Handle optional question image
     if (q.image) {
+      this.badgeCategory.innerHTML = `${q.category} <span class="photo-badge">📷 Фото</span>`;
       this.mediaImg.src = q.image;
       this.mediaBox.classList.remove('hidden');
     } else {
+      this.badgeCategory.textContent = q.category;
       this.mediaBox.classList.add('hidden');
       this.mediaImg.src = '';
     }

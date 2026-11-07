@@ -12,6 +12,7 @@ import { MATH_LOGIC_QUESTIONS } from '../data/categories/math_logic.js';
 import { GENERAL_QUESTIONS } from '../data/categories/general.js';
 import { ASTRONOMY_QUESTIONS } from '../data/categories/astronomy.js';
 import { CULTURE_QUESTIONS } from '../data/categories/culture.js';
+import { FLAGS_QUESTIONS } from '../data/categories/flags.js';
 
 const allQuestions = [
   ...BIOLOGY_QUESTIONS,
@@ -19,6 +20,7 @@ const allQuestions = [
   ...PHYSICS_QUESTIONS,
   ...HISTORY_QUESTIONS,
   ...GEOGRAPHY_QUESTIONS,
+  ...FLAGS_QUESTIONS,
   ...LITERATURE_QUESTIONS,
   ...RUSSIAN_QUESTIONS,
   ...MATH_LOGIC_QUESTIONS,
@@ -78,6 +80,7 @@ import { MATH_LOGIC_QUESTIONS } from '../data/categories/math_logic.js';
 import { GENERAL_QUESTIONS } from '../data/categories/general.js';
 import { ASTRONOMY_QUESTIONS } from '../data/categories/astronomy.js';
 import { CULTURE_QUESTIONS } from '../data/categories/culture.js';
+import { FLAGS_QUESTIONS } from '../data/categories/flags.js';
 
 export const QUESTIONS_DATA = [
   ...BIOLOGY_QUESTIONS,
@@ -85,6 +88,7 @@ export const QUESTIONS_DATA = [
   ...PHYSICS_QUESTIONS,
   ...HISTORY_QUESTIONS,
   ...GEOGRAPHY_QUESTIONS,
+  ...FLAGS_QUESTIONS,
   ...LITERATURE_QUESTIONS,
   ...RUSSIAN_QUESTIONS,
   ...MATH_LOGIC_QUESTIONS,

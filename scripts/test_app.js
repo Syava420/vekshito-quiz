@@ -90,7 +90,8 @@ const quiz = new QuizEngine(QUESTIONS_DATA, srs);
 quiz.setMode('options');
 quiz.setCategory('Химия');
 quiz.initSession();
-assert(quiz.deck.length === 45, `Deck filtered by category 'Химия' has 45 questions (got ${quiz.deck.length})`);
+const chemTotal = QUESTIONS_DATA.filter(q => q.category === 'Химия').length;
+assert(quiz.deck.length === chemTotal, `Deck filtered by category 'Химия' has ${chemTotal} questions (got ${quiz.deck.length})`);
 
 const curQ = quiz.getCurrentQuestion();
 assert(curQ !== null, 'Has active question in session');
@@ -108,13 +109,19 @@ const curQ2 = quiz.getCurrentQuestion();
 const yesNoAns = quiz.submitAnswer(curQ2.yesNo.isCorrect);
 assert(yesNoAns.isCorrect === true, 'Yes/No mode: boolean match accepted');
 
+// Test Photo Mode
+quiz.setCategory('photo');
+quiz.initSession(true);
+const expectedPhotoCount = QUESTIONS_DATA.filter(q => !!q.image).length;
+assert(quiz.deck.length === expectedPhotoCount, `Photo category pools all image questions (${expectedPhotoCount} questions)`);
+
 console.log('\n--- 5. Testing Anti-Looping (Answered cards excluded from next round) ---');
 // When we start a new due session for 'Химия', the questions just answered should NOT appear in the deck!
 const quiz2 = new QuizEngine(QUESTIONS_DATA, srs);
 quiz2.setCategory('Химия');
 quiz2.setFilter('due');
 quiz2.initSession();
-assert(quiz2.deck.length === 43, `Answered 2 questions are excluded from next round (expected 43, got ${quiz2.deck.length})`);
+assert(quiz2.deck.length === chemTotal - 2, `Answered 2 questions are excluded from next round (expected ${chemTotal - 2}, got ${quiz2.deck.length})`);
 assert(!quiz2.deck.some(q => q.id === curQ.id), `Answered question "${curQ.id}" does not repeat in circle!`);
 assert(!quiz2.deck.some(q => q.id === curQ2.id), `Answered question "${curQ2.id}" does not repeat in circle!`);
 

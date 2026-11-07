@@ -37,7 +37,9 @@ export class QuizEngine {
   initSession(forceAll = false) {
     let pool = this.allQuestions;
 
-    if (this.currentCategory !== 'all') {
+    if (this.currentCategory === 'photo') {
+      pool = pool.filter(q => !!q.image);
+    } else if (this.currentCategory !== 'all') {
       pool = pool.filter(q => q.category === this.currentCategory);
     }
 
