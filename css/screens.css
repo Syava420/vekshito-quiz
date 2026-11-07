@@ -283,6 +283,38 @@
   align-items: center;
 }
 
+.badge-diff {
+  background-color: #21262d;
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.diff-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.dot-level-1 {
+  background-color: #3fb950;
+  box-shadow: 0 0 6px rgba(63, 185, 80, 0.5);
+}
+
+.dot-level-2 {
+  background-color: #58a6ff;
+  box-shadow: 0 0 6px rgba(88, 166, 255, 0.5);
+}
+
+.dot-level-3 {
+  background-color: #bc8cff;
+  box-shadow: 0 0 6px rgba(188, 140, 255, 0.5);
+}
+
 .photo-badge {
   display: inline-flex;
   align-items: center;

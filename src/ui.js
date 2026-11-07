@@ -2,6 +2,7 @@
  * UI Controller: handles rendering, mobile interactions, and screen transitions.
  */
 import { LEVEL_LABELS } from './srs.js';
+import { DIFFICULTY_CONFIG, getQuestionDifficulty } from './difficulty.js';
 
 export class UIController {
   constructor(quizEngine, srsEngine, settings, onSettingsChange) {
@@ -46,6 +47,8 @@ export class UIController {
     this.progressText = document.getElementById('quiz-progress-text');
     this.badgeCategory = document.getElementById('quiz-badge-category');
     this.badgeLevel = document.getElementById('quiz-badge-level');
+    this.diffDot = document.getElementById('quiz-diff-dot');
+    this.diffText = document.getElementById('quiz-diff-text');
     this.questionCard = document.getElementById('question-card');
     this.questionText = document.getElementById('question-text');
     this.mediaBox = document.getElementById('question-media-box');
@@ -420,9 +423,17 @@ export class UIController {
     const srsRec = this.srs.getRecord(q.id);
     this.badgeLevel.textContent = LEVEL_LABELS[srsRec.level] || 'Новый';
 
-    // Handle optional question image
+    // Difficulty badge (colored dot without emojis)
+    const diff = q.difficulty || getQuestionDifficulty(q);
+    const diffCfg = DIFFICULTY_CONFIG[diff] || DIFFICULTY_CONFIG[1];
+    if (this.diffDot && this.diffText) {
+      this.diffDot.className = `diff-dot ${diffCfg.dotClass}`;
+      this.diffText.textContent = diffCfg.label;
+    }
+
+    // Handle optional question image (clean text, no emojis)
     if (q.image) {
-      this.badgeCategory.innerHTML = `${q.category} <span class="photo-badge">📷 Фото</span>`;
+      this.badgeCategory.innerHTML = `${q.category} <span class="photo-badge">Фото</span>`;
       this.mediaImg.src = q.image;
       this.mediaBox.classList.remove('hidden');
     } else {

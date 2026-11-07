@@ -136,6 +136,23 @@ quizAfterReset.setFilter('due');
 quizAfterReset.initSession();
 assert(quizAfterReset.deck.length === chemTotal, `Deck restored to full count (${chemTotal})`);
 
+console.log('\n--- 7. Testing Progressive Difficulty Sorting ---');
+const quizProg = new QuizEngine(QUESTIONS_DATA, srs);
+quizProg.setCategory('all');
+quizProg.initSession(true);
+let isAscending = true;
+let prevDiff = 1;
+for (const q of quizProg.deck) {
+  if (q.difficulty < prevDiff) {
+    isAscending = false;
+    break;
+  }
+  prevDiff = q.difficulty;
+}
+assert(isAscending, 'Questions in session are sorted progressively by difficulty (1 -> 2 -> 3)');
+const first10 = quizProg.deck.slice(0, 10);
+assert(first10.every(q => q.difficulty === 1), 'First 10 questions in session are all Level 1 (База)');
+
 console.log(`\n========================================`);
 console.log(`TEST SUMMARY: ${passed} passed, ${failed} failed.`);
 console.log(`========================================`);

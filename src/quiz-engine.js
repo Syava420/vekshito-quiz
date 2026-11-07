@@ -2,6 +2,7 @@
  * Quiz Engine: controls current deck, question sequencing, and validation.
  */
 import { checkAnswerFuzzy } from './fuzzy-match.js';
+import { getQuestionDifficulty } from './difficulty.js';
 
 export class QuizEngine {
   constructor(allQuestions, srsEngine) {
@@ -48,8 +49,26 @@ export class QuizEngine {
       pool = pool.filter(q => this.srsEngine.isQuestionDue(q.id));
     }
 
-    // Shuffle deck for variety
-    this.deck = [...pool].sort(() => Math.random() - 0.5);
+    // Sort progressively by difficulty:
+    // Tier 1 (База) -> Tier 2 (Эрудит) -> Tier 3 (Профи)
+    // Within each tier, shuffle randomly so it feels natural!
+    const tier1 = [];
+    const tier2 = [];
+    const tier3 = [];
+
+    for (const q of pool) {
+      const diff = getQuestionDifficulty(q);
+      q.difficulty = diff;
+      if (diff === 1) tier1.push(q);
+      else if (diff === 2) tier2.push(q);
+      else tier3.push(q);
+    }
+
+    tier1.sort(() => Math.random() - 0.5);
+    tier2.sort(() => Math.random() - 0.5);
+    tier3.sort(() => Math.random() - 0.5);
+
+    this.deck = [...tier1, ...tier2, ...tier3];
     this.currentIndex = 0;
     this.sessionStats = {
       total: this.deck.length,
