@@ -9,6 +9,7 @@ import { GEOGRAPHY_QUESTIONS } from '../data/categories/geography.js';
 import { LITERATURE_QUESTIONS } from '../data/categories/literature.js';
 import { RUSSIAN_QUESTIONS } from '../data/categories/russian.js';
 import { MATH_LOGIC_QUESTIONS } from '../data/categories/math_logic.js';
+import { VISUAL_QUESTIONS } from '../data/categories/visual.js';
 
 const allQuestions = [
   ...BIOLOGY_QUESTIONS,
@@ -18,7 +19,8 @@ const allQuestions = [
   ...GEOGRAPHY_QUESTIONS,
   ...LITERATURE_QUESTIONS,
   ...RUSSIAN_QUESTIONS,
-  ...MATH_LOGIC_QUESTIONS
+  ...MATH_LOGIC_QUESTIONS,
+  ...VISUAL_QUESTIONS
 ];
 
 // Validation
@@ -69,6 +71,7 @@ import { GEOGRAPHY_QUESTIONS } from '../data/categories/geography.js';
 import { LITERATURE_QUESTIONS } from '../data/categories/literature.js';
 import { RUSSIAN_QUESTIONS } from '../data/categories/russian.js';
 import { MATH_LOGIC_QUESTIONS } from '../data/categories/math_logic.js';
+import { VISUAL_QUESTIONS } from '../data/categories/visual.js';
 
 export const QUESTIONS_DATA = [
   ...BIOLOGY_QUESTIONS,
@@ -78,7 +81,8 @@ export const QUESTIONS_DATA = [
   ...GEOGRAPHY_QUESTIONS,
   ...LITERATURE_QUESTIONS,
   ...RUSSIAN_QUESTIONS,
-  ...MATH_LOGIC_QUESTIONS
+  ...MATH_LOGIC_QUESTIONS,
+  ...VISUAL_QUESTIONS
 ];
 `;
 fs.writeFileSync(jsPath, jsContent, 'utf8');

@@ -43,6 +43,8 @@ export class UIController {
     this.badgeLevel = document.getElementById('quiz-badge-level');
     this.questionCard = document.getElementById('question-card');
     this.questionText = document.getElementById('question-text');
+    this.mediaBox = document.getElementById('question-media-box');
+    this.mediaImg = document.getElementById('question-media-img');
 
     // Mode-specific containers
     this.containerOptions = document.getElementById('container-options');
@@ -268,7 +270,8 @@ export class UIController {
       { id: 'География', name: 'География', icon: '🌍' },
       { id: 'Литература', name: 'Литература', icon: '📚' },
       { id: 'Русский язык', name: 'Русский язык', icon: '✍️' },
-      { id: 'Математика и логика', name: 'Математика', icon: '📐' }
+      { id: 'Математика и логика', name: 'Математика', icon: '📐' },
+      { id: 'Фото и флаги', name: 'Фото и флаги', icon: '🖼️' }
     ];
 
     this.categoriesGrid.innerHTML = '';
@@ -338,6 +341,15 @@ export class UIController {
     this.badgeCategory.textContent = q.category;
     const srsRec = this.srs.getRecord(q.id);
     this.badgeLevel.textContent = LEVEL_LABELS[srsRec.level] || 'Новый';
+
+    // Handle optional question image
+    if (q.image) {
+      this.mediaImg.src = q.image;
+      this.mediaBox.classList.remove('hidden');
+    } else {
+      this.mediaBox.classList.add('hidden');
+      this.mediaImg.src = '';
+    }
 
     // Hide feedback
     this.feedbackContainer.classList.add('hidden');
