@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vekshito-quiz-v1';
+const CACHE_NAME = 'vekshito-quiz-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -11,6 +11,14 @@ const ASSETS = [
   './src/quiz-engine.js',
   './src/ui.js',
   './src/questions-data.js',
+  './data/categories/biology.js',
+  './data/categories/chemistry.js',
+  './data/categories/physics.js',
+  './data/categories/history.js',
+  './data/categories/geography.js',
+  './data/categories/literature.js',
+  './data/categories/russian.js',
+  './data/categories/math_logic.js',
   './data/questions.json',
   './manifest.json'
 ];

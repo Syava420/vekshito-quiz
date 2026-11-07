@@ -90,7 +90,7 @@ const quiz = new QuizEngine(QUESTIONS_DATA, srs);
 quiz.setMode('options');
 quiz.setCategory('Химия');
 quiz.initSession();
-assert(quiz.deck.length === 13, `Deck filtered by category 'Химия' has 13 questions (got ${quiz.deck.length})`);
+assert(quiz.deck.length === 40, `Deck filtered by category 'Химия' has 40 questions (got ${quiz.deck.length})`);
 
 const curQ = quiz.getCurrentQuestion();
 assert(curQ !== null, 'Has active question in session');
