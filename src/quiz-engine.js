@@ -9,7 +9,7 @@ export class QuizEngine {
     this.srsEngine = srsEngine;
 
     this.currentCategory = 'all'; // 'all' or specific category name
-    this.currentFilter = 'all';   // 'all' or 'due'
+    this.currentFilter = 'due';   // 'due' (default: only unstudied / due questions) or 'all'
     this.mode = 'options';        // 'options' | 'input' | 'yesno'
 
     this.deck = [];
@@ -34,19 +34,20 @@ export class QuizEngine {
     this.mode = mode;
   }
 
-  initSession() {
-    let filtered = this.allQuestions;
+  initSession(forceAll = false) {
+    let pool = this.allQuestions;
 
     if (this.currentCategory !== 'all') {
-      filtered = filtered.filter(q => q.category === this.currentCategory);
+      pool = pool.filter(q => q.category === this.currentCategory);
     }
 
-    if (this.currentFilter === 'due') {
-      filtered = filtered.filter(q => this.srsEngine.isQuestionDue(q.id));
+    // Default: only questions that are not yet learned or whose SRS interval is up!
+    if (!forceAll && this.currentFilter === 'due') {
+      pool = pool.filter(q => this.srsEngine.isQuestionDue(q.id));
     }
 
     // Shuffle deck for variety
-    this.deck = [...filtered].sort(() => Math.random() - 0.5);
+    this.deck = [...pool].sort(() => Math.random() - 0.5);
     this.currentIndex = 0;
     this.sessionStats = {
       total: this.deck.length,
@@ -124,10 +125,17 @@ export class QuizEngine {
   }
 
   getProgress() {
+    const total = this.deck.length;
+    const current = Math.min(this.currentIndex + 1, total);
+    const answered = this.sessionStats.answered;
+    const percent = total > 0 ? Math.round((this.currentIndex / total) * 100) : 0;
     return {
-      current: this.currentIndex + 1,
-      total: this.deck.length,
-      percent: this.deck.length > 0 ? Math.round(((this.currentIndex) / this.deck.length) * 100) : 0
+      current,
+      total,
+      percent,
+      answered,
+      correct: this.sessionStats.correct,
+      incorrect: this.sessionStats.incorrect
     };
   }
 }

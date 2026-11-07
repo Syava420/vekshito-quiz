@@ -119,7 +119,20 @@ export class SRSEngine {
       }
     }
 
-    return { total, newCount, learningCount, masteredCount, dueCount };
+    const learnedTotal = learningCount + masteredCount;
+    const passedCount = total - dueCount; // in interval, waiting for repetition
+    const percent = total > 0 ? Math.round((learnedTotal / total) * 100) : 0;
+
+    return {
+      total,
+      newCount,
+      learningCount,
+      masteredCount,
+      dueCount,
+      learnedTotal,
+      passedCount,
+      percent
+    };
   }
 
   exportData() {

@@ -46,20 +46,20 @@
           <div class="stat-divider"></div>
           <div class="stat-item">
             <span class="stat-number stat-highlight" id="home-stats-due">0</span>
-            <span class="stat-label">К повтору</span>
+            <span class="stat-label">К изучению</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
             <span class="stat-number" id="home-stats-mastered">0</span>
-            <span class="stat-label">Мастер</span>
+            <span class="stat-label">Изучено</span>
           </div>
         </div>
 
         <div class="filter-box">
-          <label class="toggle-control" for="filter-due-toggle">
-            <input type="checkbox" id="filter-due-toggle">
+          <label class="toggle-control" for="filter-all-toggle">
+            <input type="checkbox" id="filter-all-toggle">
             <span class="toggle-slider"></span>
-            <span class="toggle-label">Только созревшие к повторению</span>
+            <span class="toggle-label">Тренировать все (включая уже пройденные)</span>
           </label>
         </div>
 
@@ -75,12 +75,22 @@
 
       <!-- SCREEN 2: QUIZ -->
       <section id="screen-quiz" class="screen hidden">
+        <div class="quiz-header-bar">
+          <button id="btn-quiz-exit" class="btn-quiz-exit" title="Завершить раунд и вернуться в меню">
+            ✕ В меню
+          </button>
+          <div class="quiz-score-pill" id="quiz-score-pill">
+            <span class="score-correct" id="quiz-score-correct">✓ 0</span>
+            <span class="score-incorrect" id="quiz-score-incorrect">✗ 0</span>
+          </div>
+        </div>
+
         <div class="quiz-top-info">
           <div class="badges-row">
             <span class="badge badge-cat" id="quiz-badge-category">Тема</span>
             <span class="badge badge-srs" id="quiz-badge-level">Новый</span>
           </div>
-          <span class="progress-counter" id="quiz-progress-text">1 / 10</span>
+          <span class="progress-counter" id="quiz-progress-text">Вопрос 1 из 10 (0%)</span>
         </div>
 
         <div class="progress-bar-track">
@@ -207,6 +217,6 @@
 
   </div>
 
-  <script type="module" src="app.js?v=3"></script>
+  <script type="module" src="app.js?v=4"></script>
 </body>
 </html>

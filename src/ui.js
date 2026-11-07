@@ -31,12 +31,15 @@ export class UIController {
     // Home elements
     this.categoriesGrid = document.getElementById('categories-grid');
     this.btnStartQuiz = document.getElementById('btn-start-quiz');
-    this.filterToggle = document.getElementById('filter-due-toggle');
+    this.filterToggle = document.getElementById('filter-all-toggle');
     this.homeStatsDue = document.getElementById('home-stats-due');
     this.homeStatsTotal = document.getElementById('home-stats-total');
     this.homeStatsMastered = document.getElementById('home-stats-mastered');
 
     // Quiz elements
+    this.btnQuizExit = document.getElementById('btn-quiz-exit');
+    this.quizScoreCorrect = document.getElementById('quiz-score-correct');
+    this.quizScoreIncorrect = document.getElementById('quiz-score-incorrect');
     this.progressBar = document.getElementById('quiz-progress-bar');
     this.progressText = document.getElementById('quiz-progress-text');
     this.badgeCategory = document.getElementById('quiz-badge-category');
@@ -93,10 +96,19 @@ export class UIController {
       this.startQuiz();
     });
 
-    // Due filter direct toggle
+    // Due filter toggle: unchecked = only due/new (no repeats); checked = practice all
     this.filterToggle.addEventListener('change', () => {
-      this.quiz.setFilter(this.filterToggle.checked ? 'due' : 'all');
+      this.quiz.setFilter(this.filterToggle.checked ? 'all' : 'due');
       this.updateHomeStats();
+    });
+
+    // Exit quiz button in quiz header
+    this.btnQuizExit.addEventListener('click', () => {
+      if (this.quiz.sessionStats.answered > 0) {
+        this.renderSummary();
+      } else {
+        this.showScreen('home');
+      }
     });
 
     // Navigation back
@@ -242,6 +254,7 @@ export class UIController {
       this.screenHome.classList.remove('hidden');
       this.btnBack.classList.add('hidden');
       this.headerTitle.textContent = 'Эрудит Quiz';
+      this.renderCategoriesGrid();
       this.updateHomeStats();
     } else if (name === 'quiz') {
       this.screenQuiz.classList.remove('hidden');
@@ -271,7 +284,9 @@ export class UIController {
       { id: 'Литература', name: 'Литература', icon: '📚' },
       { id: 'Русский язык', name: 'Русский язык', icon: '✍️' },
       { id: 'Математика и логика', name: 'Математика', icon: '📐' },
-      { id: 'Фото и флаги', name: 'Фото и флаги', icon: '🖼️' }
+      { id: 'Общие знания', name: 'Общие знания', icon: '🧠' },
+      { id: 'Астрономия и космос', name: 'Космос', icon: '🚀' },
+      { id: 'Искусство и культура', name: 'Культура', icon: '🎨' }
     ];
 
     this.categoriesGrid.innerHTML = '';
@@ -280,14 +295,23 @@ export class UIController {
       card.className = `category-card ${cat.id === this.quiz.currentCategory ? 'active' : ''}`;
       card.setAttribute('data-category', cat.id);
       
-      const count = cat.id === 'all'
-        ? this.quiz.allQuestions.length
-        : this.quiz.allQuestions.filter(q => q.category === cat.id).length;
+      const pool = cat.id === 'all'
+        ? this.quiz.allQuestions
+        : this.quiz.allQuestions.filter(q => q.category === cat.id);
+      const catStats = this.srs.getStats(pool);
+      const isDone = (catStats.dueCount === 0 && catStats.total > 0);
 
       card.innerHTML = `
         <span class="cat-icon">${cat.icon}</span>
         <span class="cat-name">${cat.name}</span>
-        <span class="cat-count">${count} вопр.</span>
+        <span class="cat-count">${catStats.total} вопр.</span>
+        <div class="cat-progress-track">
+          <div class="cat-progress-fill" style="width: ${catStats.percent}%"></div>
+        </div>
+        ${isDone
+          ? `<span class="cat-badge-done">✓ Изучено</span>`
+          : `<span class="cat-progress-label">Пройдено: ${catStats.learnedTotal}/${catStats.total}</span>`
+        }
       `;
 
       card.addEventListener('click', () => {
@@ -309,18 +333,31 @@ export class UIController {
     const stats = this.srs.getStats(pool);
     this.homeStatsTotal.textContent = stats.total;
     this.homeStatsDue.textContent = stats.dueCount;
-    this.homeStatsMastered.textContent = stats.masteredCount;
+    this.homeStatsMastered.textContent = stats.learnedTotal;
 
-    const activeFilter = this.filterToggle.checked ? 'due' : 'all';
-    const effectiveCount = activeFilter === 'due' ? stats.dueCount : stats.total;
-    this.btnStartQuiz.textContent = `Начать раунд (${effectiveCount})`;
-    this.btnStartQuiz.disabled = (effectiveCount === 0);
+    const isAll = this.filterToggle.checked;
+    const effectiveCount = isAll ? stats.total : stats.dueCount;
+
+    if (effectiveCount > 0) {
+      this.btnStartQuiz.textContent = `Начать раунд (${effectiveCount})`;
+      this.btnStartQuiz.disabled = false;
+    } else {
+      this.btnStartQuiz.textContent = `Все вопросы изучены! Повторить (${stats.total})`;
+      this.btnStartQuiz.disabled = false;
+    }
   }
 
   startQuiz() {
-    this.quiz.initSession();
+    let pool = this.quiz.allQuestions;
+    if (this.quiz.currentCategory !== 'all') {
+      pool = pool.filter(q => q.category === this.quiz.currentCategory);
+    }
+    const stats = this.srs.getStats(pool);
+    const forceAll = this.filterToggle.checked || (stats.dueCount === 0);
+
+    this.quiz.initSession(forceAll);
     if (this.quiz.deck.length === 0) {
-      alert('В выбранной теме нет доступных вопросов для повторения.');
+      alert('В выбранной теме нет доступных вопросов.');
       return;
     }
     this.showScreen('quiz');
@@ -335,8 +372,10 @@ export class UIController {
     }
 
     const prog = this.quiz.getProgress();
-    this.progressText.textContent = `${prog.current} / ${prog.total}`;
-    this.progressBar.style.width = `${((prog.current - 1) / prog.total) * 100}%`;
+    this.progressText.textContent = `Вопрос ${prog.current} из ${prog.total} (${prog.percent}%)`;
+    this.progressBar.style.width = `${prog.percent}%`;
+    this.quizScoreCorrect.textContent = `✓ ${prog.correct}`;
+    this.quizScoreIncorrect.textContent = `✗ ${prog.incorrect}`;
 
     this.badgeCategory.textContent = q.category;
     const srsRec = this.srs.getRecord(q.id);
@@ -451,6 +490,13 @@ export class UIController {
     // Question card status border
     this.questionCard.classList.add(result.isCorrect ? 'correct-card' : 'incorrect-card');
 
+    // Update live score and progress bar
+    const prog = this.quiz.getProgress();
+    this.quizScoreCorrect.textContent = `✓ ${prog.correct}`;
+    this.quizScoreIncorrect.textContent = `✗ ${prog.incorrect}`;
+    const fillPercent = Math.round((this.quiz.sessionStats.answered / this.quiz.deck.length) * 100);
+    this.progressBar.style.width = `${fillPercent}%`;
+
     // Feedback content
     this.feedbackTitle.textContent = result.feedback;
     this.feedbackTitle.className = `feedback-title ${result.isCorrect ? 'text-success' : 'text-danger'}`;
@@ -475,9 +521,12 @@ export class UIController {
   renderSummary() {
     this.showScreen('summary');
     const stats = this.quiz.sessionStats;
-    this.summaryScore.textContent = `${stats.correct} из ${stats.total}`;
-    const percent = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    const answered = stats.answered;
+    this.summaryScore.textContent = `${stats.correct} из ${answered}`;
+    const percent = answered > 0 ? Math.round((stats.correct / answered) * 100) : 0;
     this.summaryAccuracy.textContent = `${percent}%`;
+    this.renderCategoriesGrid();
+    this.updateHomeStats();
   }
 
   openSettings() {

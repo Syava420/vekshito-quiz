@@ -9,7 +9,9 @@ import { GEOGRAPHY_QUESTIONS } from '../data/categories/geography.js';
 import { LITERATURE_QUESTIONS } from '../data/categories/literature.js';
 import { RUSSIAN_QUESTIONS } from '../data/categories/russian.js';
 import { MATH_LOGIC_QUESTIONS } from '../data/categories/math_logic.js';
-import { VISUAL_QUESTIONS } from '../data/categories/visual.js';
+import { GENERAL_QUESTIONS } from '../data/categories/general.js';
+import { ASTRONOMY_QUESTIONS } from '../data/categories/astronomy.js';
+import { CULTURE_QUESTIONS } from '../data/categories/culture.js';
 
 const allQuestions = [
   ...BIOLOGY_QUESTIONS,
@@ -20,7 +22,9 @@ const allQuestions = [
   ...LITERATURE_QUESTIONS,
   ...RUSSIAN_QUESTIONS,
   ...MATH_LOGIC_QUESTIONS,
-  ...VISUAL_QUESTIONS
+  ...GENERAL_QUESTIONS,
+  ...ASTRONOMY_QUESTIONS,
+  ...CULTURE_QUESTIONS
 ];
 
 // Validation
@@ -71,7 +75,9 @@ import { GEOGRAPHY_QUESTIONS } from '../data/categories/geography.js';
 import { LITERATURE_QUESTIONS } from '../data/categories/literature.js';
 import { RUSSIAN_QUESTIONS } from '../data/categories/russian.js';
 import { MATH_LOGIC_QUESTIONS } from '../data/categories/math_logic.js';
-import { VISUAL_QUESTIONS } from '../data/categories/visual.js';
+import { GENERAL_QUESTIONS } from '../data/categories/general.js';
+import { ASTRONOMY_QUESTIONS } from '../data/categories/astronomy.js';
+import { CULTURE_QUESTIONS } from '../data/categories/culture.js';
 
 export const QUESTIONS_DATA = [
   ...BIOLOGY_QUESTIONS,
@@ -82,7 +88,9 @@ export const QUESTIONS_DATA = [
   ...LITERATURE_QUESTIONS,
   ...RUSSIAN_QUESTIONS,
   ...MATH_LOGIC_QUESTIONS,
-  ...VISUAL_QUESTIONS
+  ...GENERAL_QUESTIONS,
+  ...ASTRONOMY_QUESTIONS,
+  ...CULTURE_QUESTIONS
 ];
 `;
 fs.writeFileSync(jsPath, jsContent, 'utf8');
