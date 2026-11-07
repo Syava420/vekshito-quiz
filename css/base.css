@@ -71,11 +71,12 @@ body {
   height: 44px;
 }
 
+.header-top .icon-btn:last-child {
+  margin-left: auto;
+}
+
 .header-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text-main);
+  display: none;
 }
 
 .icon-btn {

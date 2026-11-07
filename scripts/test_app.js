@@ -125,6 +125,17 @@ assert(quiz2.deck.length === chemTotal - 2, `Answered 2 questions are excluded f
 assert(!quiz2.deck.some(q => q.id === curQ.id), `Answered question "${curQ.id}" does not repeat in circle!`);
 assert(!quiz2.deck.some(q => q.id === curQ2.id), `Answered question "${curQ2.id}" does not repeat in circle!`);
 
+console.log('\n--- 6. Testing Per-Category SRS Reset ---');
+srs.resetCategory('Химия', QUESTIONS_DATA);
+const chemStatsAfterReset = srs.getStats(QUESTIONS_DATA.filter(q => q.category === 'Химия'));
+assert(chemStatsAfterReset.learnedTotal === 0, 'Resetting Chemistry zeroes learned count');
+assert(chemStatsAfterReset.dueCount === chemTotal, `Resetting Chemistry returns all ${chemTotal} questions to due pool`);
+const quizAfterReset = new QuizEngine(QUESTIONS_DATA, srs);
+quizAfterReset.setCategory('Химия');
+quizAfterReset.setFilter('due');
+quizAfterReset.initSession();
+assert(quizAfterReset.deck.length === chemTotal, `Deck restored to full count (${chemTotal})`);
+
 console.log(`\n========================================`);
 console.log(`TEST SUMMARY: ${passed} passed, ${failed} failed.`);
 console.log(`========================================`);

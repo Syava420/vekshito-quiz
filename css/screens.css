@@ -11,6 +11,34 @@
   align-items: center;
 }
 
+.category-reset-box {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+  margin-bottom: 14px;
+}
+
+.btn-subtle-reset {
+  background: rgba(22, 27, 34, 0.85);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-subtle-reset:hover {
+  background: rgba(218, 54, 51, 0.15);
+  border-color: rgba(218, 54, 51, 0.45);
+  color: #f85149;
+}
+
 .stat-item {
   flex: 1;
   text-align: center;
@@ -150,7 +178,7 @@
 
 .cat-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #388bfd, #2ea043);
+  background-color: #2f81f7;
   border-radius: 2px;
   transition: width 0.3s ease;
 }
@@ -293,11 +321,11 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #388bfd, #2ea043);
+  background-color: #2f81f7;
   width: 0%;
   border-radius: var(--radius-full);
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 8px rgba(56, 139, 253, 0.4);
+  box-shadow: 0 0 8px rgba(47, 129, 247, 0.35);
 }
 
 /* Question Card */

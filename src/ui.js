@@ -35,6 +35,8 @@ export class UIController {
     this.homeStatsDue = document.getElementById('home-stats-due');
     this.homeStatsTotal = document.getElementById('home-stats-total');
     this.homeStatsMastered = document.getElementById('home-stats-mastered');
+    this.categoryResetBox = document.getElementById('category-reset-box');
+    this.btnResetCurrentCategory = document.getElementById('btn-reset-current-category');
 
     // Quiz elements
     this.btnQuizExit = document.getElementById('btn-quiz-exit');
@@ -214,6 +216,22 @@ export class UIController {
       reader.readAsText(file);
     });
 
+    // Reset progress for specific category
+    if (this.btnResetCurrentCategory) {
+      this.btnResetCurrentCategory.addEventListener('click', () => {
+        const cat = this.quiz.currentCategory;
+        const catName = cat === 'all'
+          ? 'всех тем'
+          : (CATEGORIES.find(c => c.id === cat)?.name || 'темы');
+
+        if (confirm(`Сбросить прогресс по теме "${catName}"? Все вопросы темы снова станут новыми для изучения.`)) {
+          this.srs.resetCategory(cat, this.quiz.allQuestions);
+          this.renderCategoriesGrid();
+          this.updateHomeStats();
+        }
+      });
+    }
+
     // Reset progress
     this.btnResetData.addEventListener('click', () => {
       if (confirm('Сбросить весь сохранённый прогресс повторений?')) {
@@ -253,17 +271,17 @@ export class UIController {
     if (name === 'home') {
       this.screenHome.classList.remove('hidden');
       this.btnBack.classList.add('hidden');
-      this.headerTitle.textContent = 'Эрудит Quiz';
+      if (this.headerTitle) this.headerTitle.textContent = '';
       this.renderCategoriesGrid();
       this.updateHomeStats();
     } else if (name === 'quiz') {
       this.screenQuiz.classList.remove('hidden');
       this.btnBack.classList.remove('hidden');
-      this.headerTitle.textContent = 'Вопрос';
+      if (this.headerTitle) this.headerTitle.textContent = '';
     } else if (name === 'summary') {
       this.screenSummary.classList.remove('hidden');
       this.btnBack.classList.remove('hidden');
-      this.headerTitle.textContent = 'Результаты';
+      if (this.headerTitle) this.headerTitle.textContent = '';
     }
   }
 
@@ -339,6 +357,21 @@ export class UIController {
     this.homeStatsTotal.textContent = stats.total;
     this.homeStatsDue.textContent = stats.dueCount;
     this.homeStatsMastered.textContent = stats.learnedTotal;
+
+    // Show topic reset button if user has learned questions in current selection
+    if (this.categoryResetBox && this.btnResetCurrentCategory) {
+      if (stats.learnedTotal > 0) {
+        this.categoryResetBox.classList.remove('hidden');
+        const cat = this.quiz.currentCategory;
+        const catObj = CATEGORIES.find(c => c.id === cat);
+        const catName = cat === 'all'
+          ? 'всех тем'
+          : (catObj ? catObj.name : 'темы');
+        this.btnResetCurrentCategory.textContent = `↺ Сбросить прогресс (${catName}: ${stats.learnedTotal} изуч.)`;
+      } else {
+        this.categoryResetBox.classList.add('hidden');
+      }
+    }
 
     const isAll = this.filterToggle.checked;
     const effectiveCount = isAll ? stats.total : stats.dueCount;

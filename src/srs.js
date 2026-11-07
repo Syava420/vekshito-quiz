@@ -161,6 +161,19 @@ export class SRSEngine {
     this.records = {};
     this.saveRecords();
   }
+
+  resetCategory(category, allQuestions) {
+    const targetQuestions = category === 'all'
+      ? allQuestions
+      : category === 'photo'
+      ? allQuestions.filter(q => !!q.image)
+      : allQuestions.filter(q => q.category === category);
+
+    targetQuestions.forEach(q => {
+      delete this.records[q.id];
+    });
+    this.saveRecords();
+  }
 }
 
 // Settings manager

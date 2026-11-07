@@ -1,6 +1,6 @@
 {
-  "name": "Эрудит Quiz | Векшито",
-  "short_name": "Эрудит",
+  "name": "Квиз",
+  "short_name": "Квиз",
   "description": "Мобильная викторина с интервальным повторением",
   "start_url": "./index.html",
   "display": "standalone",
