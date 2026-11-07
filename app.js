@@ -24,7 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Register service worker if available
   if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('./sw.js').catch((err) => {
+    navigator.serviceWorker.register('./sw.js?v=3').then((reg) => {
+      reg.update();
+    }).catch((err) => {
       console.warn('ServiceWorker registration skipped:', err);
     });
   }

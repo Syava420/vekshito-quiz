@@ -1,32 +1,6 @@
-const CACHE_NAME = 'vekshito-quiz-v2';
-const ASSETS = [
-  './',
-  './index.html',
-  './styles.css',
-  './css/base.css',
-  './css/screens.css',
-  './app.js',
-  './src/srs.js',
-  './src/fuzzy-match.js',
-  './src/quiz-engine.js',
-  './src/ui.js',
-  './src/questions-data.js',
-  './data/categories/biology.js',
-  './data/categories/chemistry.js',
-  './data/categories/physics.js',
-  './data/categories/history.js',
-  './data/categories/geography.js',
-  './data/categories/literature.js',
-  './data/categories/russian.js',
-  './data/categories/math_logic.js',
-  './data/questions.json',
-  './manifest.json'
-];
+const CACHE_NAME = 'vekshito-quiz-v3';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
   self.skipWaiting();
 });
 
@@ -34,8 +8,8 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) return caches.delete(key);
+        keys.map((k) => {
+          if (k !== CACHE_NAME) return caches.delete(k);
         })
       )
     )
@@ -43,8 +17,17 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Network-First strategy: always fetch latest code if online, fallback to cache if offline
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(event.request)
+      .then((networkRes) => {
+        if (networkRes && networkRes.status === 200 && event.request.method === 'GET') {
+          const clone = networkRes.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return networkRes;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
