@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   );
 
-  // Register service worker if available
+  // Register service worker for offline PWA
   if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('./sw.js?v=4').then((reg) => {
+    navigator.serviceWorker.register('./sw.js?v=9').then((reg) => {
       reg.update();
     }).catch((err) => {
       console.warn('ServiceWorker registration skipped:', err);
